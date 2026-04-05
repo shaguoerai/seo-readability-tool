@@ -1,0 +1,30 @@
+name: Manual Deployment Guide
+
+# This workflow doesn't auto-run, it's just documentation
+# To deploy to GitHub Pages manually:
+# 1. Go to Settings → Pages
+# 2. Source: Deploy from a branch
+# 3. Branch: main (root folder)
+# 4. Click Save
+
+on:
+  workflow_dispatch:  # Manual trigger only
+
+jobs:
+  info:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deployment Instructions
+        run: |
+          echo "=== SEO Readability Analyzer Deployment ==="
+          echo ""
+          echo "To deploy to GitHub Pages:"
+          echo "1. Go to https://github.com/shaguoerai/seo-readability-tool/settings/pages"
+          echo "2. Source: Deploy from a branch"
+          echo "3. Branch: main (root folder)"
+          echo "4. Click Save"
+          echo ""
+          echo "Your tool will be available at:"
+          echo "https://shaguoerai.github.io/seo-readability-tool/"
+          echo ""
+          echo "Deployment usually takes 1-2 minutes."
