@@ -39,7 +39,7 @@
 #### 步骤 6：等待部署完成
 - 部署通常需要 **1-2 分钟**
 - 完成后会显示 **Success** 状态
-- 工具 URL：`https://seo-readability-tool.pages.dev/`
+- 工具 URL：`https://3107b270.seo-readability-tool.pages.dev/`
 
 ### 自定义域名（可选）
 1. 项目设置 → **Custom domains**
@@ -118,7 +118,7 @@ seo-readability-tool/
 
 ### 1. 测试工具功能
 访问以下 URL 测试：
-- **Cloudflare Pages**: https://seo-readability-tool.pages.dev/
+- **Cloudflare Pages**: https://3107b270.seo-readability-tool.pages.dev/
 - **GitHub Pages**: https://shaguoerai.github.io/seo-readability-tool/
 
 测试项目：

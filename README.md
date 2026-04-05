@@ -28,7 +28,7 @@ Free online tool to analyze content readability and SEO optimization. Get instan
 **URL**: https://shaguoerai.github.io/seo-readability-tool/
 
 ### Option 2: Cloudflare Pages (Fast China Access)
-**URL**: https://seo-readability-tool.pages.dev/
+**URL**: https://3107b270.seo-readability-tool.pages.dev/
 
 ## 🚀 Quick Start
 
