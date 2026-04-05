@@ -65,11 +65,26 @@ body {
     border-radius: 4px;
     padding: 0.25rem 0.5rem;
     font-size: 0.9rem;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
 }
 
 .language-switcher select:focus {
     outline: none;
     border-color: white;
+}
+
+/* Fix dropdown options color */
+.language-switcher select option {
+    color: #333;
+    background: white;
+}
+
+/* For Firefox */
+.language-switcher select:-moz-focusring {
+    color: transparent;
+    text-shadow: 0 0 0 white;
 }
 
 .content {

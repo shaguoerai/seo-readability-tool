@@ -36,15 +36,43 @@ class ReadabilitySEOAnalyzer {
         let fleschScore, fkGrade;
         
         if (language === 'zh' && this.isChineseText(text)) {
-            // Simplified Chinese readability scoring
-            // Based on average sentence length and character complexity
+            // Adjusted Chinese readability scoring
+            // Goal: produce scores in similar range to English (0-100)
             const avgSentenceLength = totalSentences > 0 ? totalWords / totalSentences : 0;
             const chineseCharCount = (text.match(/[\u4e00-\u9fa5]/g) || []).length;
             const charRatio = totalWords > 0 ? chineseCharCount / totalWords : 0;
             
-            // Custom Chinese readability formula (simplified)
-            fleschScore = Math.max(0, 100 - (avgSentenceLength * 1.5) - (charRatio * 20));
-            fkGrade = Math.max(1, avgSentenceLength * 0.3 + charRatio * 5);
+            // Adjusted formula to produce scores 0-100 similar to English
+            // Base score: 70 (good starting point)
+            // Penalize long sentences: -1 per word over 15
+            // Penalize high character ratio: -10 if > 0.8 (very dense Chinese)
+            let baseScore = 70;
+            
+            // Sentence length adjustment
+            if (avgSentenceLength > 15) {
+                baseScore -= (avgSentenceLength - 15) * 1;
+            } else if (avgSentenceLength < 8) {
+                baseScore += (8 - avgSentenceLength) * 2; // Reward short sentences
+            }
+            
+            // Character density adjustment
+            if (charRatio > 0.8) {
+                baseScore -= 10;
+            } else if (charRatio < 0.5) {
+                baseScore += 5; // Reward mixed content (easier to read)
+            }
+            
+            // Ensure score is in 0-100 range
+            fleschScore = Math.max(0, Math.min(100, baseScore));
+            
+            // Grade level: map score to approximate grade
+            if (fleschScore >= 80) fkGrade = 5;
+            else if (fleschScore >= 70) fkGrade = 7;
+            else if (fleschScore >= 60) fkGrade = 9;
+            else if (fleschScore >= 50) fkGrade = 11;
+            else if (fleschScore >= 40) fkGrade = 13;
+            else if (fleschScore >= 30) fkGrade = 15;
+            else fkGrade = 17;
         } else {
             // Standard English formulas
             fleschScore = totalWords > 0 && totalSentences > 0 
@@ -185,12 +213,12 @@ class ReadabilitySEOAnalyzer {
 
     getReadingLevel(fleschScore, language = 'en') {
         if (language === 'zh') {
-            // Chinese reading levels (adjusted for Chinese text)
-            if (fleschScore >= 85) return '非常容易 (小学水平)';
+            // Adjusted Chinese reading levels to match new scoring
+            if (fleschScore >= 80) return '非常容易 (小学水平)';
             if (fleschScore >= 70) return '容易 (初中水平)';
-            if (fleschScore >= 55) return '相当容易 (高中水平)';
-            if (fleschScore >= 40) return '标准 (大学水平)';
-            if (fleschScore >= 25) return '相当困难 (专业水平)';
+            if (fleschScore >= 60) return '相当容易 (高中水平)';
+            if (fleschScore >= 50) return '标准 (大学水平)';
+            if (fleschScore >= 40) return '相当困难 (专业水平)';
             return '非常困难 (学术水平)';
         } else {
             // English reading levels
