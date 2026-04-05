@@ -58,13 +58,17 @@ const translations = {
         veryDifficult: "Very Difficult (College graduate)",
         
         // Footer
-        builtWithLove: "Built with ❤️ by",
+        builtBy: "Built by",
         privacyNote: "Your content is analyzed locally in your browser - no data is sent to any server.",
         
         // Language switcher
         language: "Language",
         english: "English",
         chinese: "中文",
+        
+        // Usage instructions
+        howToUse: "How to use:",
+        instructionsText: "1. Enter title and description 2. Paste your content 3. Click \"Analyze\" 4. Follow suggestions to improve",
         
         // Example content
         exampleTitle: "How to Improve Your Content Readability and SEO Score",
@@ -143,13 +147,17 @@ Start optimizing your content today for better engagement and search rankings!`
         veryDifficult: "非常困难 (研究生)",
         
         // Footer
-        builtWithLove: "由 ❤️ 构建",
+        builtBy: "由",
         privacyNote: "您的内容在浏览器本地分析 - 不会发送到任何服务器。",
         
         // Language switcher
         language: "语言",
         english: "English",
         chinese: "中文",
+        
+        // Usage instructions
+        howToUse: "使用方法:",
+        instructionsText: "1. 输入标题和描述 2. 粘贴您的内容 3. 点击\"分析内容\" 4. 根据建议改进",
         
         // Example content (Chinese)
         exampleTitle: "如何提高内容可读性和SEO分数",
