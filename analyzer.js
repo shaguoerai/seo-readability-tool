@@ -10,19 +10,20 @@ class ReadabilitySEOAnalyzer {
     }
 
     // Main analysis function
-    analyze(content, title = '', metaDescription = '') {
+    analyze(content, title = '', metaDescription = '', language = 'en') {
         this.results = {
-            readability: this.analyzeReadability(content),
-            seo: this.analyzeSEO(content, title, metaDescription),
-            suggestions: []
+            readability: this.analyzeReadability(content, language),
+            seo: this.analyzeSEO(content, title, metaDescription, language),
+            suggestions: [],
+            language: language
         };
 
-        this.generateSuggestions();
+        this.generateSuggestions(language);
         return this.results;
     }
 
     // Readability analysis
-    analyzeReadability(text) {
+    analyzeReadability(text, language = 'en') {
         const sentences = this.extractSentences(text);
         const words = this.extractWords(text);
         const syllables = this.countSyllables(text);
@@ -31,15 +32,29 @@ class ReadabilitySEOAnalyzer {
         const totalWords = words.length;
         const totalSyllables = syllables;
         
-        // Flesch Reading Ease
-        const fleschScore = totalWords > 0 && totalSentences > 0 
-            ? 206.835 - 1.015 * (totalWords / totalSentences) - 84.6 * (totalSyllables / totalWords)
-            : 0;
+        // Adjust Flesch formula for Chinese
+        let fleschScore, fkGrade;
         
-        // Flesch-Kincaid Grade Level
-        const fkGrade = totalWords > 0 && totalSentences > 0
-            ? 0.39 * (totalWords / totalSentences) + 11.8 * (totalSyllables / totalWords) - 15.59
-            : 0;
+        if (language === 'zh' && this.isChineseText(text)) {
+            // Simplified Chinese readability scoring
+            // Based on average sentence length and character complexity
+            const avgSentenceLength = totalSentences > 0 ? totalWords / totalSentences : 0;
+            const chineseCharCount = (text.match(/[\u4e00-\u9fa5]/g) || []).length;
+            const charRatio = totalWords > 0 ? chineseCharCount / totalWords : 0;
+            
+            // Custom Chinese readability formula (simplified)
+            fleschScore = Math.max(0, 100 - (avgSentenceLength * 1.5) - (charRatio * 20));
+            fkGrade = Math.max(1, avgSentenceLength * 0.3 + charRatio * 5);
+        } else {
+            // Standard English formulas
+            fleschScore = totalWords > 0 && totalSentences > 0 
+                ? 206.835 - 1.015 * (totalWords / totalSentences) - 84.6 * (totalSyllables / totalWords)
+                : 0;
+            
+            fkGrade = totalWords > 0 && totalSentences > 0
+                ? 0.39 * (totalWords / totalSentences) + 11.8 * (totalSyllables / totalWords) - 15.59
+                : 0;
+        }
         
         // Average sentence length
         const avgSentenceLength = totalSentences > 0 ? totalWords / totalSentences : 0;
@@ -63,8 +78,15 @@ class ReadabilitySEOAnalyzer {
             avgWordLength: Math.round(avgWordLength * 10) / 10,
             paragraphCount: paragraphs.length,
             avgParagraphLength: Math.round(avgParagraphLength * 10) / 10,
-            readingLevel: this.getReadingLevel(fleschScore)
+            readingLevel: this.getReadingLevel(fleschScore, language)
         };
+    }
+    
+    // Check if text is primarily Chinese
+    isChineseText(text) {
+        const chineseChars = (text.match(/[\u4e00-\u9fa5]/g) || []).length;
+        const totalChars = text.replace(/\s+/g, '').length;
+        return totalChars > 0 && (chineseChars / totalChars) > 0.3; // 30%+ Chinese characters
     }
 
     // SEO analysis
@@ -115,11 +137,17 @@ class ReadabilitySEOAnalyzer {
 
     // Helper methods
     extractSentences(text) {
-        return text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+        // Support both English and Chinese sentence endings
+        return text.split(/[.!?。！？]+/).filter(s => s.trim().length > 0);
     }
 
     extractWords(text) {
-        return text.toLowerCase().match(/\b[a-z]+\b/g) || [];
+        // Support both English words and Chinese characters
+        // English words: sequences of letters
+        // Chinese characters: individual characters (excluding punctuation)
+        const englishWords = text.toLowerCase().match(/\b[a-z]+\b/g) || [];
+        const chineseChars = text.match(/[\u4e00-\u9fa5]/g) || [];
+        return [...englishWords, ...chineseChars];
     }
 
     countSyllables(text) {
@@ -127,18 +155,24 @@ class ReadabilitySEOAnalyzer {
         let totalSyllables = 0;
         
         words.forEach(word => {
-            // Simplified syllable counting
-            word = word.toLowerCase();
-            if (word.length <= 3) {
+            // Check if word is Chinese character
+            if (/^[\u4e00-\u9fa5]$/.test(word)) {
+                // Chinese characters: typically 1 syllable per character
                 totalSyllables += 1;
             } else {
-                // Count vowel groups
-                const vowelGroups = word.match(/[aeiouy]+/g);
-                totalSyllables += vowelGroups ? vowelGroups.length : 1;
-                
-                // Adjust for silent e
-                if (word.endsWith('e') && !word.endsWith('le')) {
-                    totalSyllables -= 1;
+                // English word syllable counting
+                word = word.toLowerCase();
+                if (word.length <= 3) {
+                    totalSyllables += 1;
+                } else {
+                    // Count vowel groups
+                    const vowelGroups = word.match(/[aeiouy]+/g);
+                    totalSyllables += vowelGroups ? vowelGroups.length : 1;
+                    
+                    // Adjust for silent e
+                    if (word.endsWith('e') && !word.endsWith('le')) {
+                        totalSyllables -= 1;
+                    }
                 }
             }
             
@@ -149,14 +183,25 @@ class ReadabilitySEOAnalyzer {
         return totalSyllables;
     }
 
-    getReadingLevel(fleschScore) {
-        if (fleschScore >= 90) return 'Very Easy (5th grade)';
-        if (fleschScore >= 80) return 'Easy (6th grade)';
-        if (fleschScore >= 70) return 'Fairly Easy (7th grade)';
-        if (fleschScore >= 60) return 'Standard (8th-9th grade)';
-        if (fleschScore >= 50) return 'Fairly Difficult (10th-12th grade)';
-        if (fleschScore >= 30) return 'Difficult (College)';
-        return 'Very Difficult (College graduate)';
+    getReadingLevel(fleschScore, language = 'en') {
+        if (language === 'zh') {
+            // Chinese reading levels (adjusted for Chinese text)
+            if (fleschScore >= 85) return '非常容易 (小学水平)';
+            if (fleschScore >= 70) return '容易 (初中水平)';
+            if (fleschScore >= 55) return '相当容易 (高中水平)';
+            if (fleschScore >= 40) return '标准 (大学水平)';
+            if (fleschScore >= 25) return '相当困难 (专业水平)';
+            return '非常困难 (学术水平)';
+        } else {
+            // English reading levels
+            if (fleschScore >= 90) return 'Very Easy (5th grade)';
+            if (fleschScore >= 80) return 'Easy (6th grade)';
+            if (fleschScore >= 70) return 'Fairly Easy (7th grade)';
+            if (fleschScore >= 60) return 'Standard (8th-9th grade)';
+            if (fleschScore >= 50) return 'Fairly Difficult (10th-12th grade)';
+            if (fleschScore >= 30) return 'Difficult (College)';
+            return 'Very Difficult (College graduate)';
+        }
     }
 
     calculateKeywordDensity(text) {
@@ -279,18 +324,66 @@ class ReadabilitySEOAnalyzer {
     }
 
     // Generate suggestions based on analysis
-    generateSuggestions() {
+    generateSuggestions(language = 'en') {
         const suggestions = [];
         const { readability, seo } = this.results;
         
-        // Readability suggestions
-        if (readability.fleschReadingEase < 60) {
-            suggestions.push({
-                category: 'readability',
-                priority: 'high',
-                message: `Your content has a reading ease score of ${readability.fleschReadingEase}. Aim for 60+ for broader audience reach.`,
-                action: 'Shorten sentences and use simpler vocabulary.'
-            });
+        if (language === 'zh') {
+            // Chinese suggestions
+            if (readability.fleschReadingEase < 40) {
+                suggestions.push({
+                    category: 'readability',
+                    priority: 'high',
+                    message: `您的内容可读性分数为 ${readability.fleschReadingEase}。建议达到40分以上以获得更广泛的受众。`,
+                    action: '缩短句子长度，使用更简单的词汇。'
+                });
+            }
+            
+            if (readability.avgSentenceLength > 25) {
+                suggestions.push({
+                    category: 'readability',
+                    priority: 'medium',
+                    message: `平均句子长度为 ${readability.avgSentenceLength} 个词。建议控制在15-20个词以内。`,
+                    action: '将长句子拆分为多个短句。'
+                });
+            }
+            
+            if (readability.avgParagraphLength > 200) {
+                suggestions.push({
+                    category: 'readability',
+                    priority: 'medium',
+                    message: `平均段落长度为 ${readability.avgParagraphLength} 个词。`,
+                    action: '将长段落拆分为3-5句话的段落。'
+                });
+            }
+        } else {
+            // English suggestions
+            if (readability.fleschReadingEase < 60) {
+                suggestions.push({
+                    category: 'readability',
+                    priority: 'high',
+                    message: `Your content has a reading ease score of ${readability.fleschReadingEase}. Aim for 60+ for broader audience reach.`,
+                    action: 'Shorten sentences and use simpler vocabulary.'
+                });
+            }
+            
+            if (readability.avgSentenceLength > 20) {
+                suggestions.push({
+                    category: 'readability',
+                    priority: 'medium',
+                    message: `Average sentence length is ${readability.avgSentenceLength} words. Optimal is 15-20 words.`,
+                    action: 'Break long sentences into shorter ones.'
+                });
+            }
+            
+            if (readability.avgParagraphLength > 150) {
+                suggestions.push({
+                    category: 'readability',
+                    priority: 'medium',
+                    message: `Average paragraph length is ${readability.avgParagraphLength} words.`,
+                    action: 'Break long paragraphs into 3-5 sentences each.'
+                });
+            }
         }
         
         if (readability.avgSentenceLength > 20) {
@@ -311,55 +404,116 @@ class ReadabilitySEOAnalyzer {
             });
         }
         
-        // SEO suggestions
+        // SEO suggestions (language-specific)
         if (seo.title.score < 80) {
-            suggestions.push({
-                category: 'seo',
-                priority: 'high',
-                message: `Title is ${seo.title.length} characters (optimal: 50-60).`,
-                action: 'Shorten title to include main keyword and stay under 60 characters.'
-            });
+            if (language === 'zh') {
+                suggestions.push({
+                    category: 'seo',
+                    priority: 'high',
+                    message: `标题长度为 ${seo.title.length} 字符（建议：15-30字符）。`,
+                    action: '缩短标题，包含主要关键词，保持在30字符以内。'
+                });
+            } else {
+                suggestions.push({
+                    category: 'seo',
+                    priority: 'high',
+                    message: `Title is ${seo.title.length} characters (optimal: 50-60).`,
+                    action: 'Shorten title to include main keyword and stay under 60 characters.'
+                });
+            }
         }
         
         if (seo.metaDescription.score < 80) {
-            suggestions.push({
-                category: 'seo',
-                priority: 'high',
-                message: `Meta description is ${seo.metaDescription.length} characters (optimal: 120-160).`,
-                action: 'Adjust meta description length and include a call-to-action.'
-            });
+            if (language === 'zh') {
+                suggestions.push({
+                    category: 'seo',
+                    priority: 'high',
+                    message: `元描述长度为 ${seo.metaDescription.length} 字符（建议：70-150字符）。`,
+                    action: '调整元描述长度，包含行动号召。'
+                });
+            } else {
+                suggestions.push({
+                    category: 'seo',
+                    priority: 'high',
+                    message: `Meta description is ${seo.metaDescription.length} characters (optimal: 120-160).`,
+                    action: 'Adjust meta description length and include a call-to-action.'
+                });
+            }
         }
         
         if (seo.keywordDensity.score < 80) {
-            suggestions.push({
-                category: 'seo',
-                priority: 'medium',
-                message: `Main keyword density is ${seo.keywordDensity.density}% (optimal: 1-2%).`,
-                action: seo.keywordDensity.density < 1 
-                    ? 'Increase keyword usage naturally.' 
-                    : 'Reduce keyword stuffing.'
-            });
+            if (language === 'zh') {
+                suggestions.push({
+                    category: 'seo',
+                    priority: 'medium',
+                    message: `主要关键词密度为 ${seo.keywordDensity.density}%（建议：1-3%）。`,
+                    action: seo.keywordDensity.density < 1 
+                        ? '自然地增加关键词使用。' 
+                        : '减少关键词堆砌。'
+                });
+            } else {
+                suggestions.push({
+                    category: 'seo',
+                    priority: 'medium',
+                    message: `Main keyword density is ${seo.keywordDensity.density}% (optimal: 1-2%).`,
+                    action: seo.keywordDensity.density < 1 
+                        ? 'Increase keyword usage naturally.' 
+                        : 'Reduce keyword stuffing.'
+                });
+            }
         }
         
         if (seo.headings.h1Count !== 1) {
-            suggestions.push({
-                category: 'seo',
-                priority: 'high',
-                message: `Found ${seo.headings.h1Count} H1 headings (should be exactly 1).`,
-                action: 'Ensure you have exactly one H1 heading containing your main keyword.'
-            });
+            if (language === 'zh') {
+                suggestions.push({
+                    category: 'seo',
+                    priority: 'high',
+                    message: `发现 ${seo.headings.h1Count} 个H1标题（应该正好1个）。`,
+                    action: '确保您有且仅有一个H1标题，包含主要关键词。'
+                });
+            } else {
+                suggestions.push({
+                    category: 'seo',
+                    priority: 'high',
+                    message: `Found ${seo.headings.h1Count} H1 headings (should be exactly 1).`,
+                    action: 'Ensure you have exactly one H1 heading containing your main keyword.'
+                });
+            }
         }
         
         if (seo.contentLength.words < 300) {
-            suggestions.push({
-                category: 'seo',
-                priority: 'medium',
-                message: `Content length is ${seo.contentLength.words} words (minimum 300 recommended).`,
-                action: 'Add more valuable content to reach at least 300 words.'
-            });
+            if (language === 'zh') {
+                suggestions.push({
+                    category: 'seo',
+                    priority: 'medium',
+                    message: `内容长度为 ${seo.contentLength.words} 个词（建议至少300词）。`,
+                    action: '添加更多有价值的内容，达到至少300词。'
+                });
+            } else {
+                suggestions.push({
+                    category: 'seo',
+                    priority: 'medium',
+                    message: `Content length is ${seo.contentLength.words} words (minimum 300 recommended).`,
+                    action: 'Add more valuable content to reach at least 300 words.'
+                });
+            }
         }
         
         this.results.suggestions = suggestions;
+    }
+    
+    // Detect language of text
+    detectLanguage(text) {
+        const chineseChars = (text.match(/[\u4e00-\u9fa5]/g) || []).length;
+        const englishWords = (text.match(/\b[a-z]+\b/gi) || []).length;
+        
+        if (chineseChars > englishWords * 2) {
+            return 'zh';
+        } else if (englishWords > chineseChars * 2) {
+            return 'en';
+        } else {
+            return 'en'; // Default to English for mixed content
+        }
     }
 
     // Get color for score visualization

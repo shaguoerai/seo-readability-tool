@@ -1,339 +1,63 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ReadabilitySEO Analyzer - Free Content Optimization Tool</title>
+    <title data-i18n="title">ReadabilitySEO Analyzer - Free Content Optimization Tool</title>
     <meta name="description" content="Free online tool to analyze content readability and SEO. Get instant feedback and actionable suggestions to improve your content.">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #333;
-            line-height: 1.6;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            overflow: hidden;
-        }
-        
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 3rem 2rem;
-            text-align: center;
-        }
-        
-        .header h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-        
-        .header p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        .content {
-            padding: 2rem;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-        }
-        
-        @media (max-width: 768px) {
-            .content {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        .input-section, .results-section {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 2rem;
-        }
-        
-        .input-section h2, .results-section h2 {
-            color: #667eea;
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid #e5e7eb;
-        }
-        
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: #4b5563;
-        }
-        
-        input, textarea {
-            width: 100%;
-            padding: 0.75rem;
-            border: 2px solid #e5e7eb;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: border-color 0.3s;
-        }
-        
-        input:focus, textarea:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-        
-        textarea {
-            min-height: 200px;
-            resize: vertical;
-            font-family: monospace;
-        }
-        
-        .button-group {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-        
-        button {
-            flex: 1;
-            padding: 1rem;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        
-        .analyze-btn {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
-        }
-        
-        .reset-btn {
-            background: #e5e7eb;
-            color: #4b5563;
-        }
-        
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
-        
-        /* Results styling */
-        .score-display {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-        
-        .score-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 8px;
-            text-align: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        }
-        
-        .score-value {
-            font-size: 2.5rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-        }
-        
-        .score-label {
-            font-size: 0.9rem;
-            color: #6b7280;
-        }
-        
-        .suggestions-list {
-            margin-top: 2rem;
-        }
-        
-        .suggestion-item {
-            background: white;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            border-left: 4px solid #e5e7eb;
-        }
-        
-        .suggestion-item.high {
-            border-left-color: #ef4444;
-        }
-        
-        .suggestion-item.medium {
-            border-left-color: #f59e0b;
-        }
-        
-        .suggestion-item.low {
-            border-left-color: #10b981;
-        }
-        
-        .suggestion-priority {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-        
-        .priority-high {
-            background: #fee2e2;
-            color: #dc2626;
-        }
-        
-        .priority-medium {
-            background: #fef3c7;
-            color: #d97706;
-        }
-        
-        .priority-low {
-            background: #d1fae5;
-            color: #059669;
-        }
-        
-        .suggestion-message {
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-        
-        .suggestion-action {
-            font-size: 0.9rem;
-            color: #6b7280;
-            font-style: italic;
-        }
-        
-        .detailed-results {
-            margin-top: 2rem;
-        }
-        
-        .result-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.75rem 0;
-            border-bottom: 1px solid #e5e7eb;
-        }
-        
-        .result-label {
-            color: #4b5563;
-        }
-        
-        .result-value {
-            font-weight: 600;
-        }
-        
-        .footer {
-            text-align: center;
-            padding: 2rem;
-            color: #6b7280;
-            border-top: 1px solid #e5e7eb;
-            margin-top: 2rem;
-        }
-        
-        .loading {
-            display: none;
-            text-align: center;
-            padding: 2rem;
-        }
-        
-        .loading-spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #667eea;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 1rem;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .hidden {
-            display: none;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>📊 ReadabilitySEO Analyzer</h1>
-            <p>Free online tool to analyze content readability and SEO optimization. Get instant feedback and actionable suggestions.</p>
+            <h1 data-i18n="title">ReadabilitySEO Analyzer</h1>
+            <p data-i18n="subtitle">Free online tool to analyze content readability and SEO optimization. Get instant feedback and actionable suggestions.</p>
+            
+            <div class="language-switcher">
+                <label for="language-switcher" data-i18n="language">Language:</label>
+                <select id="language-switcher">
+                    <option value="en" data-i18n="english">English</option>
+                    <option value="zh" data-i18n="chinese">中文</option>
+                </select>
+            </div>
         </div>
         
         <div class="content">
             <div class="input-section">
-                <h2>📝 Analyze Your Content</h2>
+                <h2 data-i18n="analyzeYourContent">📝 Analyze Your Content</h2>
                 
                 <div class="form-group">
-                    <label for="title">Page Title</label>
-                    <input type="text" id="title" placeholder="Enter your page title (50-60 characters optimal)" value="How to Improve Your Content Readability and SEO Score">
+                    <label for="title" data-i18n="pageTitle">Page Title</label>
+                    <input type="text" id="title" data-i18n="pageTitlePlaceholder" placeholder="Enter your page title (50-60 characters optimal)">
                 </div>
                 
                 <div class="form-group">
-                    <label for="meta">Meta Description</label>
-                    <input type="text" id="meta" placeholder="Enter your meta description (120-160 characters optimal)" value="Learn how to analyze and improve your content readability and SEO with our free tool. Get actionable suggestions for better engagement and rankings.">
+                    <label for="meta" data-i18n="metaDescription">Meta Description</label>
+                    <input type="text" id="meta" data-i18n="metaDescriptionPlaceholder" placeholder="Enter your meta description (120-160 characters optimal)">
                 </div>
                 
                 <div class="form-group">
-                    <label for="content">Content</label>
-                    <textarea id="content" placeholder="Paste your content here...">Welcome to our comprehensive guide on content optimization. In today's digital landscape, creating content that is both readable and search-engine friendly is crucial for success.
-
-Readability refers to how easy your content is to understand. Factors like sentence length, vocabulary complexity, and paragraph structure all contribute to readability. Research shows that content with good readability scores higher in user engagement and retention.
-
-SEO (Search Engine Optimization) involves optimizing your content to rank higher in search engine results. This includes proper use of keywords, meta tags, heading structure, and content length. Well-optimized content attracts more organic traffic and converts better.
-
-Our tool analyzes both aspects and provides specific suggestions for improvement. Simply paste your content above and click "Analyze" to get started.
-
-Key areas we analyze:
-1. Readability scores (Flesch Reading Ease, Flesch-Kincaid Grade Level)
-2. SEO elements (title, meta description, keyword density)
-3. Content structure and formatting
-4. Overall optimization score
-
-Start optimizing your content today for better engagement and search rankings!</textarea>
+                    <label for="content" data-i18n="content">Content</label>
+                    <textarea id="content" data-i18n="contentPlaceholder" placeholder="Paste your content here..."></textarea>
                 </div>
                 
                 <div class="button-group">
-                    <button class="analyze-btn" onclick="analyzeContent()">🚀 Analyze Content</button>
-                    <button class="reset-btn" onclick="resetForm()">🔄 Reset</button>
+                    <button class="analyze-btn" onclick="analyzeContent()" data-i18n="analyzeButton">🚀 Analyze Content</button>
+                    <button class="reset-btn" onclick="resetForm()" data-i18n="resetButton">🔄 Reset</button>
                 </div>
                 
                 <div class="loading" id="loading">
                     <div class="loading-spinner"></div>
-                    <p>Analyzing your content...</p>
+                    <p data-i18n="analyzing">Analyzing your content...</p>
                 </div>
             </div>
             
             <div class="results-section">
-                <h2>📈 Analysis Results</h2>
+                <h2 data-i18n="analysisResults">📈 Analysis Results</h2>
                 
                 <div id="results-placeholder">
                     <p style="text-align: center; color: #6b7280; padding: 3rem 1rem;">
-                        Your analysis results will appear here after you click "Analyze Content".
+                        <span data-i18n="analysisResults">Your analysis results will appear here after you click "Analyze Content".</span>
                     </p>
                 </div>
                 
@@ -341,11 +65,11 @@ Start optimizing your content today for better engagement and search rankings!</
                     <div class="score-display">
                         <div class="score-card">
                             <div class="score-value" id="readability-score">--</div>
-                            <div class="score-label">Readability Score</div>
+                            <div class="score-label" data-i18n="readabilityScore">Readability Score</div>
                         </div>
                         <div class="score-card">
                             <div class="score-value" id="seo-score">--</div>
-                            <div class="score-label">SEO Score</div>
+                            <div class="score-label" data-i18n="seoScore">SEO Score</div>
                         </div>
                     </div>
                     
@@ -354,7 +78,7 @@ Start optimizing your content today for better engagement and search rankings!</
                     </div>
                     
                     <div class="detailed-results">
-                        <h3>Detailed Analysis</h3>
+                        <h3 data-i18n="detailedAnalysis">Detailed Analysis</h3>
                         <div id="detailed-results">
                             <!-- Detailed results will be inserted here -->
                         </div>
@@ -364,25 +88,46 @@ Start optimizing your content today for better engagement and search rankings!</
         </div>
         
         <div class="footer">
-            <p>Built with ❤️ by <strong>Nova</strong> - Free SEO & Readability Analysis Tool</p>
-            <p style="margin-top: 0.5rem; font-size: 0.9rem;">
+            <p><span data-i18n="builtWithLove">Built with ❤️ by</span> <strong>Nova</strong> - <span data-i18n="subtitle">Free SEO & Readability Analysis Tool</span></p>
+            <p style="margin-top: 0.5rem; font-size: 0.9rem;" data-i18n="privacyNote">
                 Your content is analyzed locally in your browser - no data is sent to any server.
             </p>
         </div>
     </div>
     
     <script src="analyzer.js"></script>
+    <script src="i18n.js"></script>
     <script>
-        // Initialize analyzer
+        // Initialize analyzer and i18n
         const analyzer = new ReadabilitySEOAnalyzer();
+        let i18n;
+        
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            i18n = new I18n();
+            
+            // Listen for language changes to update analysis
+            document.addEventListener('languageChanged', (e) => {
+                document.documentElement.setAttribute('data-lang', e.detail.language);
+                // Re-analyze if there's content
+                const content = document.getElementById('content').value;
+                if (content && content.trim()) {
+                    setTimeout(analyzeContent, 100);
+                }
+            });
+            
+            // Auto-analyze example content after a short delay
+            setTimeout(analyzeContent, 500);
+        });
         
         function analyzeContent() {
             const title = document.getElementById('title').value;
             const meta = document.getElementById('meta').value;
             const content = document.getElementById('content').value;
+            const language = i18n ? i18n.getCurrentLanguage() : 'en';
             
             if (!content.trim()) {
-                alert('Please enter some content to analyze.');
+                alert(i18n ? i18n.t('contentPlaceholder') : 'Please enter some content to analyze.');
                 return;
             }
             
@@ -393,15 +138,19 @@ Start optimizing your content today for better engagement and search rankings!</
             
             // Simulate processing time for better UX
             setTimeout(() => {
-                const results = analyzer.analyze(content, title, meta);
-                displayResults(results);
+                // Auto-detect language if not explicitly set
+                const detectedLanguage = analyzer.detectLanguage(content);
+                const analysisLanguage = language === 'auto' ? detectedLanguage : language;
+                
+                const results = analyzer.analyze(content, title, meta, analysisLanguage);
+                displayResults(results, analysisLanguage);
                 
                 // Hide loading
                 document.getElementById('loading').style.display = 'none';
             }, 800);
         }
         
-        function displayResults(results) {
+        function displayResults(results, language) {
             // Update scores
             document.getElementById('readability-score').textContent = results.readability.fleschReadingEase;
             document.getElementById('readability-score').style.color = analyzer.getReadingEaseColor(results.readability.fleschReadingEase);
@@ -414,7 +163,10 @@ Start optimizing your content today for better engagement and search rankings!</
             suggestionsContainer.innerHTML = '';
             
             if (results.suggestions.length === 0) {
-                suggestionsContainer.innerHTML = '<p style="text-align: center; color: #10b981;">🎉 Great job! Your content looks well optimized.</p>';
+                const noSuggestionsText = language === 'zh' 
+                    ? '🎉 做得好！您的内容看起来已经优化得很好。'
+                    : '🎉 Great job! Your content looks well optimized.';
+                suggestionsContainer.innerHTML = `<p style="text-align: center; color: #10b981;">${noSuggestionsText}</p>`;
             } else {
                 results.suggestions.forEach(suggestion => {
                     const priorityClass = `priority-${suggestion.priority}`;
@@ -423,7 +175,7 @@ Start optimizing your content today for better engagement and search rankings!</
                     const suggestionHTML = `
                         <div class="${itemClass}">
                             <span class="suggestion-priority ${priorityClass}">
-                                ${suggestion.priority.toUpperCase()} PRIORITY
+                                ${suggestion.priority.toUpperCase()} ${language === 'zh' ? '优先级' : 'PRIORITY'}
                             </span>
                             <div class="suggestion-message">${suggestion.message}</div>
                             <div class="suggestion-action">💡 ${suggestion.action}</div>
@@ -437,61 +189,64 @@ Start optimizing your content today for better engagement and search rankings!</
             const detailedContainer = document.getElementById('detailed-results');
             detailedContainer.innerHTML = '';
             
+            // Get translation keys based on language
+            const t = i18n ? i18n.t.bind(i18n) : (key) => key;
+            
             // Readability details
             detailedContainer.innerHTML += `
-                <h4 style="margin-top: 1.5rem; color: #667eea;">Readability Analysis</h4>
+                <h4 style="margin-top: 1.5rem; color: #667eea;">${t('detailedAnalysis')} - ${t('readabilityScore')}</h4>
                 <div class="result-item">
-                    <span class="result-label">Flesch Reading Ease</span>
+                    <span class="result-label">${t('fleschReadingEase')}</span>
                     <span class="result-value">${results.readability.fleschReadingEase}</span>
                 </div>
                 <div class="result-item">
-                    <span class="result-label">Grade Level</span>
+                    <span class="result-label">${t('gradeLevel')}</span>
                     <span class="result-value">${results.readability.fleschKincaidGrade}</span>
                 </div>
                 <div class="result-item">
-                    <span class="result-label">Reading Level</span>
+                    <span class="result-label">${t('readingLevel')}</span>
                     <span class="result-value">${results.readability.readingLevel}</span>
                 </div>
                 <div class="result-item">
-                    <span class="result-label">Sentences</span>
+                    <span class="result-label">${t('sentences')}</span>
                     <span class="result-value">${results.readability.totalSentences}</span>
                 </div>
                 <div class="result-item">
-                    <span class="result-label">Words</span>
+                    <span class="result-label">${t('words')}</span>
                     <span class="result-value">${results.readability.totalWords}</span>
                 </div>
                 <div class="result-item">
-                    <span class="result-label">Avg. Sentence Length</span>
-                    <span class="result-value">${results.readability.avgSentenceLength} words</span>
+                    <span class="result-label">${t('avgSentenceLength')}</span>
+                    <span class="result-value">${results.readability.avgSentenceLength} ${language === 'zh' ? '个词' : 'words'}</span>
                 </div>
                 <div class="result-item">
-                    <span class="result-label">Avg. Paragraph Length</span>
-                    <span class="result-value">${results.readability.avgParagraphLength} words</span>
+                    <span class="result-label">${t('avgParagraphLength')}</span>
+                    <span class="result-value">${results.readability.avgParagraphLength} ${language === 'zh' ? '个词' : 'words'}</span>
                 </div>
             `;
             
             // SEO details
             detailedContainer.innerHTML += `
-                <h4 style="margin-top: 1.5rem; color: #667eea;">SEO Analysis</h4>
+                <h4 style="margin-top: 1.5rem; color: #667eea;">${t('detailedAnalysis')} - ${t('seoScore')}</h4>
                 <div class="result-item">
-                    <span class="result-label">Title Length</span>
-                    <span class="result-value">${results.seo.title.length} characters (${results.seo.title.score}/100)</span>
+                    <span class="result-label">${t('titleLength')}</span>
+                    <span class="result-value">${results.seo.title.length} ${language === 'zh' ? '字符' : 'characters'} (${results.seo.title.score}/100)</span>
                 </div>
                 <div class="result-item">
-                    <span class="result-label">Meta Description Length</span>
-                    <span class="result-value">${results.seo.metaDescription.length} characters (${results.seo.metaDescription.score}/100)</span>
+                    <span class="result-label">${t('metaDescriptionLength')}</span>
+                    <span class="result-value">${results.seo.metaDescription.length} ${language === 'zh' ? '字符' : 'characters'} (${results.seo.metaDescription.score}/100)</span>
                 </div>
                 <div class="result-item">
-                    <span class="result-label">Keyword Density</span>
+                    <span class="result-label">${t('keywordDensity')}</span>
                     <span class="result-value">${results.seo.keywordDensity.density}% (${results.seo.keywordDensity.score}/100)</span>
                 </div>
                 <div class="result-item">
-                    <span class="result-label">Headings (H1/H2/H3+)</span>
+                    <span class="result-label">${t('headings')}</span>
                     <span class="result-value">${results.seo.headings.h1Count}/${results.seo.headings.h2Count}/${results.seo.headings.h3PlusCount} (${results.seo.headings.score}/100)</span>
                 </div>
                 <div class="result-item">
-                    <span class="result-label">Content Length</span>
-                    <span class="result-value">${results.seo.contentLength.words} words (${results.seo.contentLength.score}/100)</span>
+                    <span class="result-label">${t('contentLength')}</span>
+                    <span class="result-value">${results.seo.contentLength.words} ${language === 'zh' ? '个词' : 'words'} (${results.seo.contentLength.score}/100)</span>
                 </div>
             `;
             
@@ -506,12 +261,18 @@ Start optimizing your content today for better engagement and search rankings!</
             document.getElementById('results-placeholder').classList.remove('hidden');
             document.getElementById('results-content').classList.add('hidden');
             document.getElementById('loading').style.display = 'none';
+            
+            // Reset to example content based on current language
+            if (i18n) {
+                const lang = i18n.getCurrentLanguage();
+                const translations = window.translations || {};
+                if (translations[lang]) {
+                    document.getElementById('title').value = translations[lang].exampleTitle || '';
+                    document.getElementById('meta').value = translations[lang].exampleMeta || '';
+                    document.getElementById('content').value = translations[lang].exampleContent || '';
+                }
+            }
         }
-        
-        // Initialize with example analysis
-        window.addEventListener('DOMContentLoaded', () => {
-            setTimeout(analyzeContent, 500);
-        });
     </script>
 </body>
 </html>

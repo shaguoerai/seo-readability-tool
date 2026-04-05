@@ -22,12 +22,35 @@ Free online tool to analyze content readability and SEO optimization. Get instan
 - Content structure advice
 - Real-time scoring and feedback
 
+## 🌐 Multiple Deployment Options
+
+### Option 1: GitHub Pages (Global)
+**URL**: https://shaguoerai.github.io/seo-readability-tool/
+
+### Option 2: Cloudflare Pages (Fast China Access)
+**URL**: https://seo-readability-tool.pages.dev/
+
 ## 🚀 Quick Start
 
-1. **Visit the tool**: [seo-readability-tool.github.io](https://seo-readability-tool.github.io)
-2. **Paste your content** in the text area
-3. **Click "Analyze"** to get instant feedback
-4. **Follow suggestions** to improve your content
+1. **Visit the tool** using any of the URLs above
+2. **Select language** (English/中文) in the top-right corner
+3. **Paste your content** in the text area
+4. **Click "Analyze"** to get instant feedback
+5. **Follow suggestions** to improve your content
+
+## 🌍 Bilingual Support
+
+### English Features
+- Flesch Reading Ease scoring
+- Flesch-Kincaid Grade Level
+- SEO optimization analysis
+- Actionable improvement suggestions
+
+### 中文功能
+- 中文内容可读性分析
+- 中文SEO优化检查
+- 中文本地化建议
+- 双语界面切换
 
 ## 🛠️ How It Works
 
