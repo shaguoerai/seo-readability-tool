@@ -1,0 +1,17 @@
+{
+  "name": "seo-readability-tool",
+  "version": "1.0.0",
+  "description": "Free online tool to analyze content readability and SEO optimization",
+  "main": "index.html",
+  "scripts": {
+    "build": "echo 'Static site - no build required'",
+    "preview": "echo 'Open index.html in browser'"
+  },
+  "keywords": ["seo", "readability", "analysis", "tool", "free"],
+  "author": "YuGe AI",
+  "license": "MIT",
+  "devDependencies": {},
+  "engines": {
+    "node": ">=14"
+  }
+}
