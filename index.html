@@ -29,18 +29,24 @@
                 <div class="usage-instructions" style="background: #e8f4fd; border-left: 4px solid #3b82f6; padding: 1rem; margin-bottom: 1.5rem; border-radius: 4px;">
                     <p style="margin: 0; font-size: 0.95rem; color: #1e40af;">
                         <strong data-i18n="howToUse">How to use:</strong>
-                        <span data-i18n="instructionsText">1. Enter title and description 2. Paste your content 3. Click "Analyze" 4. Follow suggestions to improve</span>
+                        <span data-i18n="instructionsText">1. Enter title and description (check character counters) 2. Paste your content 3. Click "Analyze" 4. Review specific suggestions and improve</span>
                     </p>
                 </div>
                 
                 <div class="form-group">
                     <label for="title" data-i18n="pageTitle">Page Title</label>
-                    <input type="text" id="title" data-i18n="pageTitlePlaceholder" placeholder="Enter your page title (50-60 characters optimal)">
+                    <input type="text" id="title" data-i18n="pageTitlePlaceholder" placeholder="Enter your page title (50-60 characters optimal)" oninput="updateTitleCounter()">
+                    <div class="character-counter" id="title-counter" style="font-size: 0.85rem; margin-top: 0.25rem;">
+                        <span data-i18n="charactersEntered">Characters entered:</span> <span id="title-count">0</span> / <span data-i18n="recommended">recommended 50-60</span>
+                    </div>
                 </div>
                 
                 <div class="form-group">
                     <label for="meta" data-i18n="metaDescription">Page Description</label>
-                    <input type="text" id="meta" data-i18n="metaDescriptionPlaceholder" placeholder="Enter your page description (120-160 characters optimal)">
+                    <input type="text" id="meta" data-i18n="metaDescriptionPlaceholder" placeholder="Enter your page description (120-160 characters optimal)" oninput="updateMetaCounter()">
+                    <div class="character-counter" id="meta-counter" style="font-size: 0.85rem; margin-top: 0.25rem;">
+                        <span data-i18n="charactersEntered">Characters entered:</span> <span id="meta-count">0</span> / <span data-i18n="recommended">recommended 120-160</span>
+                    </div>
                     <small style="color: #6b7280; font-size: 0.85rem; margin-top: 0.25rem; display: block;" data-i18n="metaDescriptionExplanation">(Short description shown in search results)</small>
                 </div>
                 
@@ -122,11 +128,59 @@
                 if (content && content.trim()) {
                     setTimeout(analyzeContent, 100);
                 }
+                // Update character counters with new translations
+                updateTitleCounter();
+                updateMetaCounter();
             });
+            
+            // Initialize character counters
+            updateTitleCounter();
+            updateMetaCounter();
             
             // Auto-analyze example content after a short delay
             setTimeout(analyzeContent, 500);
         });
+        
+        // Character counter functions
+        function updateTitleCounter() {
+            const title = document.getElementById('title').value;
+            const count = title.length;
+            const counter = document.getElementById('title-count');
+            const counterDiv = document.getElementById('title-counter');
+            
+            counter.textContent = count;
+            
+            // Color coding based on SEO recommendations
+            if (count === 0) {
+                counterDiv.style.color = '#6b7280'; // Gray - empty
+            } else if (count >= 50 && count <= 60) {
+                counterDiv.style.color = '#10b981'; // Green - optimal
+            } else if (count >= 40 && count <= 70) {
+                counterDiv.style.color = '#f59e0b'; // Yellow - acceptable
+            } else {
+                counterDiv.style.color = '#ef4444'; // Red - out of range
+            }
+        }
+        
+        function updateMetaCounter() {
+            const meta = document.getElementById('meta').value;
+            const count = meta.length;
+            const counter = document.getElementById('meta-count');
+            const counterDiv = document.getElementById('meta-counter');
+            
+            counter.textContent = count;
+            
+            // Color coding based on SEO recommendations
+            if (count === 0) {
+                counterDiv.style.color = '#6b7280'; // Gray - empty
+            } else if (count >= 120 && count <= 160) {
+                counterDiv.style.color = '#10b981'; // Green - optimal
+            } else if (count >= 100 && count <= 180) {
+                counterDiv.style.color = '#f59e0b'; // Yellow - acceptable
+            } else {
+                counterDiv.style.color = '#ef4444'; // Red - out of range
+            }
+        }
         
         function analyzeContent() {
             const title = document.getElementById('title').value;
@@ -159,6 +213,56 @@
         }
         
         function displayResults(results, language) {
+            // Helper functions for getting descriptions
+            function getTitleDescription(length, language) {
+                if (length >= 50 && length <= 60) {
+                    return language === 'zh' ? 'SEO标题长度良好' : 'Good length for SEO';
+                } else if (length < 50) {
+                    return language === 'zh' ? '标题太短 - 建议添加更多关键词' : 'Too short - add more keywords';
+                } else {
+                    return language === 'zh' ? '标题太长 - 建议缩短以便更好显示' : 'Too long - shorten for better display';
+                }
+            }
+            
+            function getMetaDescription(length, language) {
+                if (length >= 120 && length <= 160) {
+                    return language === 'zh' ? '描述长度适合搜索结果' : 'Good length for search results';
+                } else if (length < 120) {
+                    return language === 'zh' ? '描述太短 - 建议添加更多细节' : 'Too short - add more details';
+                } else {
+                    return language === 'zh' ? '描述太长 - 可能被截断' : 'Too long - may be truncated';
+                }
+            }
+            
+            function getKeywordDescription(density, language) {
+                if (density >= 1 && density <= 2) {
+                    return language === 'zh' ? '关键词密度良好' : 'Good keyword balance';
+                } else if (density < 1) {
+                    return language === 'zh' ? '关键词密度低 - 考虑添加更多关键词' : 'Low - consider adding more keywords';
+                } else {
+                    return language === 'zh' ? '关键词密度高 - 减少关键词堆砌' : 'High - reduce keyword stuffing';
+                }
+            }
+            
+            function getHeadingsDescription(h1Count, language) {
+                if (h1Count === 1) {
+                    return language === 'zh' ? '标题结构良好' : 'Good heading structure';
+                } else if (h1Count === 0) {
+                    return language === 'zh' ? '缺少H1标题' : 'Missing H1 heading';
+                } else {
+                    return language === 'zh' ? '多个H1标题 - 应该只有一个' : 'Multiple H1 headings - should have only one';
+                }
+            }
+            
+            function getContentDescription(wordCount, language) {
+                if (wordCount >= 300) {
+                    return language === 'zh' ? '内容长度良好' : 'Good content length';
+                } else if (wordCount >= 150) {
+                    return language === 'zh' ? '内容较短 - 考虑添加更多细节' : 'Content is short - consider adding more detail';
+                } else {
+                    return language === 'zh' ? '内容很短 - 建议大幅扩展' : 'Content is very short - consider expanding significantly';
+                }
+            }
             // Update scores
             document.getElementById('readability-score').textContent = results.readability.fleschReadingEase;
             document.getElementById('readability-score').style.color = analyzer.getReadingEaseColor(results.readability.fleschReadingEase);
@@ -238,23 +342,38 @@
                 <h4 style="margin-top: 1.5rem; color: #667eea;">${t('detailedAnalysis')} - ${t('seoScore')}</h4>
                 <div class="result-item">
                     <span class="result-label">${t('titleLength')}</span>
-                    <span class="result-value">${results.seo.title.length} ${language === 'zh' ? '字符' : 'characters'} (${results.seo.title.score}/100)</span>
+                    <span class="result-value">
+                        ${results.seo.title.length} ${language === 'zh' ? '字符' : 'characters'} (${results.seo.title.score}/100)<br>
+                        <small style="color: #6b7280; font-size: 0.9rem;">${getTitleDescription(results.seo.title.length, language)}</small>
+                    </span>
                 </div>
                 <div class="result-item">
                     <span class="result-label">${t('metaDescriptionLength')}</span>
-                    <span class="result-value">${results.seo.metaDescription.length} ${language === 'zh' ? '字符' : 'characters'} (${results.seo.metaDescription.score}/100)</span>
+                    <span class="result-value">
+                        ${results.seo.metaDescription.length} ${language === 'zh' ? '字符' : 'characters'} (${results.seo.metaDescription.score}/100)<br>
+                        <small style="color: #6b7280; font-size: 0.9rem;">${getMetaDescription(results.seo.metaDescription.length, language)}</small>
+                    </span>
                 </div>
                 <div class="result-item">
                     <span class="result-label">${t('keywordDensity')}</span>
-                    <span class="result-value">${results.seo.keywordDensity.density}% (${results.seo.keywordDensity.score}/100)</span>
+                    <span class="result-value">
+                        ${results.seo.keywordDensity.density}% (${results.seo.keywordDensity.score}/100)<br>
+                        <small style="color: #6b7280; font-size: 0.9rem;">${getKeywordDescription(results.seo.keywordDensity.density, language)}</small>
+                    </span>
                 </div>
                 <div class="result-item">
                     <span class="result-label">${t('headings')}</span>
-                    <span class="result-value">${results.seo.headings.h1Count}/${results.seo.headings.h2Count}/${results.seo.headings.h3PlusCount} (${results.seo.headings.score}/100)</span>
+                    <span class="result-value">
+                        ${results.seo.headings.h1Count}/${results.seo.headings.h2Count}/${results.seo.headings.h3PlusCount} (${results.seo.headings.score}/100)<br>
+                        <small style="color: #6b7280; font-size: 0.9rem;">${getHeadingsDescription(results.seo.headings.h1Count, language)}</small>
+                    </span>
                 </div>
                 <div class="result-item">
                     <span class="result-label">${t('contentLength')}</span>
-                    <span class="result-value">${results.seo.contentLength.words} ${language === 'zh' ? '个词' : 'words'} (${results.seo.contentLength.score}/100)</span>
+                    <span class="result-value">
+                        ${results.seo.contentLength.words} ${language === 'zh' ? '个词' : 'words'} (${results.seo.contentLength.score}/100)<br>
+                        <small style="color: #6b7280; font-size: 0.9rem;">${getContentDescription(results.seo.contentLength.words, language)}</small>
+                    </span>
                 </div>
             `;
             
@@ -263,9 +382,20 @@
         }
         
         function resetForm() {
+            // Clear input fields
             document.getElementById('title').value = '';
             document.getElementById('meta').value = '';
             document.getElementById('content').value = '';
+            
+            // Clear analysis results
+            document.getElementById('suggestions').innerHTML = '';
+            document.getElementById('detailed-results').innerHTML = '';
+            document.getElementById('readability-score').textContent = '--';
+            document.getElementById('seo-score').textContent = '--';
+            document.getElementById('readability-score').style.color = '';
+            document.getElementById('seo-score').style.color = '';
+            
+            // Reset UI state
             document.getElementById('results-placeholder').classList.remove('hidden');
             document.getElementById('results-content').classList.add('hidden');
             document.getElementById('loading').style.display = 'none';

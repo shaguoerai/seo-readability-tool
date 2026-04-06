@@ -68,7 +68,28 @@ const translations = {
         
         // Usage instructions
         howToUse: "How to use:",
-        instructionsText: "1. Enter title and description 2. Paste your content 3. Click \"Analyze\" 4. Follow suggestions to improve",
+        instructionsText: "1. Enter title and description (check character counters) 2. Paste your content 3. Click \"Analyze\" 4. Review specific suggestions and improve",
+        
+        // Character counters
+        charactersEntered: "Characters entered:",
+        recommended: "recommended",
+        
+        // Analysis result descriptions
+        titleLengthGood: "Good length for SEO",
+        titleLengthShort: "Too short - add more keywords",
+        titleLengthLong: "Too long - shorten for better display",
+        metaLengthGood: "Good length for search results",
+        metaLengthShort: "Too short - add more details",
+        metaLengthLong: "Too long - may be truncated",
+        keywordDensityGood: "Good keyword balance",
+        keywordDensityLow: "Low - consider adding more keywords",
+        keywordDensityHigh: "High - reduce keyword stuffing",
+        headingsGood: "Good heading structure",
+        headingsNoH1: "Missing H1 heading",
+        headingsMultipleH1: "Multiple H1 headings - should have only one",
+        contentLengthGood: "Good content length",
+        contentLengthShort: "Content is short - consider adding more detail",
+        contentLengthLong: "Content is long - good for comprehensive coverage",
         
         // Example content
         exampleTitle: "How to Improve Your Content Readability and SEO Score",
@@ -157,7 +178,28 @@ Start optimizing your content today for better engagement and search rankings!`
         
         // Usage instructions
         howToUse: "使用方法:",
-        instructionsText: "1. 输入标题和描述 2. 粘贴您的内容 3. 点击\"分析内容\" 4. 根据建议改进",
+        instructionsText: "1. 输入标题和描述（查看字符计数） 2. 粘贴您的内容 3. 点击\"分析内容\" 4. 查看具体建议并改进",
+        
+        // Character counters
+        charactersEntered: "已输入字符:",
+        recommended: "建议",
+        
+        // Analysis result descriptions
+        titleLengthGood: "SEO标题长度良好",
+        titleLengthShort: "标题太短 - 建议添加更多关键词",
+        titleLengthLong: "标题太长 - 建议缩短以便更好显示",
+        metaLengthGood: "描述长度适合搜索结果",
+        metaLengthShort: "描述太短 - 建议添加更多细节",
+        metaLengthLong: "描述太长 - 可能被截断",
+        keywordDensityGood: "关键词密度良好",
+        keywordDensityLow: "关键词密度低 - 考虑添加更多关键词",
+        keywordDensityHigh: "关键词密度高 - 减少关键词堆砌",
+        headingsGood: "标题结构良好",
+        headingsNoH1: "缺少H1标题",
+        headingsMultipleH1: "多个H1标题 - 应该只有一个",
+        contentLengthGood: "内容长度良好",
+        contentLengthShort: "内容较短 - 考虑添加更多细节",
+        contentLengthLong: "内容较长 - 有利于全面覆盖",
         
         // Example content (Chinese)
         exampleTitle: "如何提高内容可读性和SEO分数",
