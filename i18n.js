@@ -288,21 +288,36 @@ class I18n {
     }
     
     updateExampleContent(lang) {
-        // Only update example content if fields are empty or contain default English content
+        // Only update example content if fields are completely empty
+        // Never translate or replace user-entered content
         const titleField = document.getElementById('title');
         const metaField = document.getElementById('meta');
         const contentField = document.getElementById('content');
         
-        if (titleField && (titleField.value === '' || titleField.value === translations['en'].exampleTitle)) {
-            titleField.value = translations[lang].exampleTitle;
+        // Check if fields are truly empty (not just whitespace)
+        const isTitleEmpty = titleField && titleField.value.trim() === '';
+        const isMetaEmpty = metaField && metaField.value.trim() === '';
+        const isContentEmpty = contentField && contentField.value.trim() === '';
+        
+        // Only update if completely empty
+        if (isTitleEmpty) {
+            titleField.value = translations[lang].exampleTitle || '';
         }
         
-        if (metaField && (metaField.value === '' || metaField.value === translations['en'].exampleMeta)) {
-            metaField.value = translations[lang].exampleMeta;
+        if (isMetaEmpty) {
+            metaField.value = translations[lang].exampleMeta || '';
         }
         
-        if (contentField && (contentField.value === '' || contentField.value === translations['en'].exampleContent)) {
-            contentField.value = translations[lang].exampleContent;
+        if (isContentEmpty) {
+            contentField.value = translations[lang].exampleContent || '';
+        }
+        
+        // Update character counters after setting example content
+        if (isTitleEmpty || isMetaEmpty) {
+            setTimeout(() => {
+                if (typeof updateTitleCounter === 'function') updateTitleCounter();
+                if (typeof updateMetaCounter === 'function') updateMetaCounter();
+            }, 100);
         }
     }
     

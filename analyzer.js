@@ -36,43 +36,57 @@ class ReadabilitySEOAnalyzer {
         let fleschScore, fkGrade;
         
         if (language === 'zh' && this.isChineseText(text)) {
-            // Adjusted Chinese readability scoring
-            // Goal: produce scores in similar range to English (0-100)
+            // Unified Chinese readability scoring - produces scores similar to English
+            // Based on sentence complexity and character density
             const avgSentenceLength = totalSentences > 0 ? totalWords / totalSentences : 0;
             const chineseCharCount = (text.match(/[\u4e00-\u9fa5]/g) || []).length;
             const charRatio = totalWords > 0 ? chineseCharCount / totalWords : 0;
             
-            // Adjusted formula to produce scores 0-100 similar to English
-            // Base score: 70 (good starting point)
-            // Penalize long sentences: -1 per word over 15
-            // Penalize high character ratio: -10 if > 0.8 (very dense Chinese)
-            let baseScore = 70;
+            // Start with a base score that's typical for well-written content
+            let baseScore = 65;
             
-            // Sentence length adjustment
-            if (avgSentenceLength > 15) {
-                baseScore -= (avgSentenceLength - 15) * 1;
+            // 1. Sentence length adjustment (similar to English Flesch logic)
+            // Optimal: 10-15 words per sentence
+            if (avgSentenceLength > 20) {
+                baseScore -= (avgSentenceLength - 20) * 2; // Heavy penalty for very long sentences
+            } else if (avgSentenceLength > 15) {
+                baseScore -= (avgSentenceLength - 15) * 1; // Moderate penalty
             } else if (avgSentenceLength < 8) {
-                baseScore += (8 - avgSentenceLength) * 2; // Reward short sentences
+                baseScore += (8 - avgSentenceLength) * 1.5; // Reward concise sentences
             }
             
-            // Character density adjustment
+            // 2. Character density adjustment
+            // Mixed content (0.3-0.7 ratio) is easiest to read
             if (charRatio > 0.8) {
-                baseScore -= 10;
+                baseScore -= 15; // Very dense Chinese - harder to read
+            } else if (charRatio > 0.7) {
+                baseScore -= 8;
+            } else if (charRatio < 0.3) {
+                baseScore += 10; // Mostly non-Chinese content - easier for bilingual readers
             } else if (charRatio < 0.5) {
-                baseScore += 5; // Reward mixed content (easier to read)
+                baseScore += 5; // Good mix
             }
             
-            // Ensure score is in 0-100 range
-            fleschScore = Math.max(0, Math.min(100, baseScore));
+            // 3. Content length bonus (longer content tends to be more comprehensive)
+            if (totalWords > 500) {
+                baseScore += 5;
+            } else if (totalWords < 100) {
+                baseScore -= 10; // Very short content
+            }
             
-            // Grade level: map score to approximate grade
-            if (fleschScore >= 80) fkGrade = 5;
+            // Ensure score is in 0-100 range (same as English)
+            fleschScore = Math.max(0, Math.min(100, Math.round(baseScore)));
+            
+            // Grade level mapping - similar to English Flesch-Kincaid
+            // This ensures Chinese and English content get comparable grade levels
+            if (fleschScore >= 90) fkGrade = 5;
+            else if (fleschScore >= 80) fkGrade = 6;
             else if (fleschScore >= 70) fkGrade = 7;
-            else if (fleschScore >= 60) fkGrade = 9;
-            else if (fleschScore >= 50) fkGrade = 11;
-            else if (fleschScore >= 40) fkGrade = 13;
-            else if (fleschScore >= 30) fkGrade = 15;
-            else fkGrade = 17;
+            else if (fleschScore >= 60) fkGrade = 8;
+            else if (fleschScore >= 50) fkGrade = 10;
+            else if (fleschScore >= 40) fkGrade = 12;
+            else if (fleschScore >= 30) fkGrade = 14;
+            else fkGrade = 16;
         } else {
             // Standard English formulas
             fleschScore = totalWords > 0 && totalSentences > 0 
