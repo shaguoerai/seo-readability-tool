@@ -125,9 +125,6 @@
                 document.documentElement.setAttribute('data-lang', e.detail.language);
                 // Re-analyze if there's content
                 const content = document.getElementById('content').value;
-                if (content && content.trim()) {
-                    setTimeout(analyzeContent, 100);
-                }
                 // Update character counters with new translations
                 updateTitleCounter();
                 updateMetaCounter();
