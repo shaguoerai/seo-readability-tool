@@ -400,6 +400,12 @@
             document.getElementById('results-content').classList.add('hidden');
             document.getElementById('loading').style.display = 'none';
             
+            // Remove recommendation section if exists
+            const recommendationSection = document.querySelector('.recommendation-section');
+            if (recommendationSection) {
+                recommendationSection.remove();
+            }
+            
             // Reset to example content based on current language
             if (i18n) {
                 const lang = i18n.getCurrentLanguage();
@@ -415,7 +421,7 @@
         // Add tool recommendation after analysis
         function showToolRecommendation() {
             const recommendationHTML = `
-                <div class="recommendation-section" style="margin-top: 2.5rem; padding: 1.5rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; color: white;">
+                <div class="recommendation-section" style="margin: 2.5rem 0 0; padding: 2rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; color: white; width: 100%;">
                     <h3 style="margin-top: 0; margin-bottom: 1rem; font-size: 1.25rem;">
                         🚀 <span data-i18n="recommendationTitle">Boost Your Content Creation Efficiency</span>
                     </h3>
@@ -457,10 +463,18 @@
                 </div>
             `;
             
-            // Insert recommendation after results
-            const resultsSection = document.getElementById('results-content');
-            if (resultsSection && !resultsSection.querySelector('.recommendation-section')) {
-                resultsSection.insertAdjacentHTML('beforeend', recommendationHTML);
+            // Insert recommendation after the two-column content
+            const contentContainer = document.querySelector('.content');
+            const existingRecommendation = document.querySelector('.recommendation-section');
+            
+            // Remove existing recommendation if any (to avoid duplicates)
+            if (existingRecommendation) {
+                existingRecommendation.remove();
+            }
+            
+            // Add new recommendation after the content container
+            if (contentContainer) {
+                contentContainer.insertAdjacentHTML('afterend', recommendationHTML);
                 
                 // Update i18n for new elements
                 if (i18n) {
