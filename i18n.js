@@ -108,7 +108,19 @@ Key areas we analyze:
 3. Content structure and formatting
 4. Overall optimization score
 
-Start optimizing your content today for better engagement and search rankings!`
+Start optimizing your content today for better engagement and search rankings!`,
+        
+        // Tool recommendation (English)
+        recommendationTitle: "Boost Your Content Creation Efficiency",
+        recommendationText: "You've analyzed your content readability. Now automate 92% of your business writing with AI.",
+        emailAutomation: "Email Automation",
+        emailSaving: "28 minutes → 2 minutes per email",
+        proposalAutomation: "Proposal Automation",
+        proposalSaving: "2.75 hours → 15 minutes",
+        reportAutomation: "Report Automation",
+        reportSaving: "55 minutes → 5 minutes",
+        getToolButton: "Get $90 Value for $1 (Emergency Launch)",
+        riskFree: "30-day money-back guarantee • Limited time offer"
     },
     
     zh: {
@@ -218,7 +230,19 @@ SEO（搜索引擎优化）涉及优化您的内容以在搜索引擎结果中�
 3. 内容结构和格式
 4. 整体优化分数
 
-立即开始优化您的内容，以获得更好的参与度和搜索排名！`
+立即开始优化您的内容，以获得更好的参与度和搜索排名！`,
+        
+        // Tool recommendation (Chinese)
+        recommendationTitle: "提升内容创作效率",
+        recommendationText: "您已分析了内容可读性。现在使用AI自动化92%的商业写作。",
+        emailAutomation: "邮件自动化",
+        emailSaving: "28分钟 → 2分钟每封邮件",
+        proposalAutomation: "提案自动化",
+        proposalSaving: "2.75小时 → 15分钟",
+        reportAutomation: "报告自动化",
+        reportSaving: "55分钟 → 5分钟",
+        getToolButton: "获取$90价值仅需$1（紧急启动）",
+        riskFree: "30天退款保证 • 限时优惠"
     }
 };
 
